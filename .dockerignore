@@ -1,0 +1,18 @@
+# VCS metadata — not needed inside the image (vergen values are provided
+# via ARG/ENV instead)
+.git/
+
+# Rust artifacts — rebuilt inside the container
+**/target/
+
+# Secrets must never enter the build context or image layers
+.env
+
+# Host-side bind-mount content (agent's scratch workspace)
+workspace/
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.swp
+.DS_Store
