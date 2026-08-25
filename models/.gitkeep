@@ -1,0 +1,2 @@
+Local model checkpoints go here (bind-mounted read-write at /models inside the
+container). Set FT_MODEL=/models/<name> in .env to serve one.

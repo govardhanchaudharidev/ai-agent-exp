@@ -1,15 +1,29 @@
-# VCS metadata — not needed inside the image (vergen values are provided
-# via ARG/ENV instead)
+# VCS metadata — not needed inside the image
 .git/
 
-# Rust artifacts — rebuilt inside the container
-**/target/
+# Python artifacts — (re)built inside the container
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/dist/
+**/*.egg-info/
+
+# Upstream bits the image build never reads (keeps the context lean);
+# pyproject.toml embeds README.md + LICENSE, setup.py compiles
+# python/freetoken/** and freetoken-kernel-cache/ — those all stay.
+FreeToken/.github/
+FreeToken/tests/
+FreeToken/docs/
+FreeToken/assets/
+FreeToken/benchmarks/
+FreeToken/scripts/
 
 # Secrets must never enter the build context or image layers
 .env
 
-# Host-side bind-mount content (agent's scratch workspace)
+# Host-side bind-mount content (engine scratch workspace / local checkpoints)
 workspace/
+models/
 
 # Editor / OS noise
 .idea/

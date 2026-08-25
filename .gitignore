@@ -2,7 +2,11 @@
 .env
 
 # Upstream source clone (fetched on demand — see README / `make doctor`)
-pi_agent_rust/
+FreeToken/
+
+# Local model checkpoints served via the ./models bind mount
+models/*
+!models/.gitkeep
 
 # Agent workspace contents (keep the directory itself via placeholder)
 workspace/*

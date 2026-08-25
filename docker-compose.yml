@@ -1,34 +1,61 @@
-name: pi-agent-rust
+name: freetoken
 
 services:
-  pi:
+  ft:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        # Match your host user so workspace file ownership stays sane.
+        # Match your host user so bind-mounted file ownership stays sane.
         # `make` exports HOST_UID/HOST_GID automatically; plain
         # `docker compose` falls back to 1000.
         UID: ${HOST_UID:-1000}
         GID: ${HOST_GID:-1000}
-    image: pi-agent-rust:local
-    container_name: pi-agent
-    init: true          # reap zombie processes spawned by agent shells
-    stdin_open: true    # the TUI needs an open STDIN
-    tty: true           # the TUI needs a pseudo-terminal
+        # Prebuild the multi-arch kernel-cache wheel during the image build
+        # (slower build, faster first server start). See README "Notes".
+        FREETOKEN_PREBUILD_KERNEL_CACHE: ${FREETOKEN_PREBUILD_KERNEL_CACHE:-false}
+    image: freetoken:local
+    container_name: freetoken
+    init: true          # reap zombie processes spawned by engine workers
+    stdin_open: true    # `ft shell` inside the container needs an open STDIN
+    tty: true           # interactive commands want a pseudo-terminal
     working_dir: /workspace
+    ports:
+      # Engine API (OpenAI /v1/*, Anthropic /v1/messages) published 1:1.
+      - "${FT_PORT:-1919}:${FT_PORT:-1919}"
     environment:
-      # Propagate terminal type for the interactive UI.
+      # Propagate terminal type for interactive commands.
       TERM: ${TERM:-xterm-256color}
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+      # Model + serve flags consumed by entrypoint.sh (values come from .env).
+      FT_MODEL: ${FT_MODEL:?Set FT_MODEL in .env — see FreeToken/docs/models.md}
+      FT_HOST: ${FT_HOST:-0.0.0.0}
+      FT_PORT: ${FT_PORT:-1919}
+      FT_SERVE_ARGS: ${FT_SERVE_ARGS:-}
     env_file:
-      # Provider API keys — edit .env and uncomment what you use.
+      # Optional extras — currently HF_TOKEN (gated models).
       - path: .env
         required: false
     volumes:
-      # Project files the agent reads & edits.
+      # Downloaded Hugging Face checkpoints survive container recreation
+      # (they can be tens of GB — `make destroy` wipes them).
+      - hf_cache:/home/ft/.cache/huggingface
+      # Engine state: bench-bw profiles, JIT/kernel warm-up caches.
+      - ft_cache:/home/ft/.cache/freetoken
+      # Local checkpoints: drop them in ./models and set FT_MODEL=/models/<name>
+      # to skip the download entirely.
+      - ./models:/models
+      # Scratch area for in-container agent sessions (e.g. `ft launch opencode`).
       - ./workspace:/workspace
-      # Persistent settings, sessions, skills (~/.pi/agent inside the image).
-      - pi_home:/home/pi/.pi
+    ipc: host           # torch shared memory without /dev/shm size limits
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all   # pin a specific card with device_ids: ['0'] + FT_SERVE_ARGS="--gpu 0"
+              capabilities: [gpu]
 
 volumes:
-  pi_home:
+  hf_cache:
+  ft_cache:
