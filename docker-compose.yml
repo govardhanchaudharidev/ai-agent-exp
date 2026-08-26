@@ -1,34 +1,5 @@
-name: pi-agent-rust
-
 services:
-  pi:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        # Match your host user so workspace file ownership stays sane.
-        # `make` exports HOST_UID/HOST_GID automatically; plain
-        # `docker compose` falls back to 1000.
-        UID: ${HOST_UID:-1000}
-        GID: ${HOST_GID:-1000}
-    image: pi-agent-rust:local
-    container_name: pi-agent
-    init: true          # reap zombie processes spawned by agent shells
-    stdin_open: true    # the TUI needs an open STDIN
-    tty: true           # the TUI needs a pseudo-terminal
-    working_dir: /workspace
-    environment:
-      # Propagate terminal type for the interactive UI.
-      TERM: ${TERM:-xterm-256color}
-    env_file:
-      # Provider API keys — edit .env and uncomment what you use.
-      - path: .env
-        required: false
-    volumes:
-      # Project files the agent reads & edits.
-      - ./workspace:/workspace
-      # Persistent settings, sessions, skills (~/.pi/agent inside the image).
-      - pi_home:/home/pi/.pi
-
-volumes:
-  pi_home:
+  node:
+    image: node:22-alpine
+    command: ["tail", "-f", "/dev/null"]
+    # keep the container running; exec into it with: docker compose run --rm node sh
