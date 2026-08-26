@@ -120,7 +120,7 @@ make up
 - The `Dockerfile` installs Pi at build time so the container runs offline
   afterward.
 - If you switch providers or change API keys, run `make pi-models` to refresh
-  the model catalog.
+  the model catalog (`pi update --models`).
 - Pi is launched from within the container via `make pi` or `make shell` +
   `pi`.
 

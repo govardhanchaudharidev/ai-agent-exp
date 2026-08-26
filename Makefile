@@ -18,7 +18,7 @@ pi:
 
 # Refresh Pi's provider model catalog (fetches latest model lists from providers)
 pi-models:
-	docker compose exec node sh -c "pi --refresh-models"
+	docker compose exec node sh -c "pi update --models"
 
 # Print the installed Pi version
 pi-version:
