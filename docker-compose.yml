@@ -1,5 +1,10 @@
 services:
   node:
-    image: node:22-alpine
-    command: ["tail", "-f", "/dev/null"]
-    # keep the container running; exec into it with: docker compose run --rm node sh
+    build: .
+    working_dir: /workspace
+    ports:
+      - "3080:3080"
+    volumes:
+      - /home/gvc/dev/ai-agent-exp:/workspace
+    stdin_open: true
+    tty: true

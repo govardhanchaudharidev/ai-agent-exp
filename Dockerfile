@@ -1,2 +1,8 @@
-# placeholder — will be replaced when you add app code
-# base image: node:22-alpine (set via docker-compose.yml "image")
+FROM node:22-alpine
+
+WORKDIR /workspace
+
+# Install DSH at build time — this container runs offline after
+RUN npm install -g @deepseek-ai/dsh
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
