@@ -2,9 +2,12 @@ services:
   node:
     build: .
     working_dir: /workspace
-    ports:
-      - "3080:3080"
+    env_file: .env
     volumes:
-      - /home/gvc/dev/ai-agent-exp:/workspace
+      - .:/workspace
+      - pi-config:/root/.pi/agent
     stdin_open: true
     tty: true
+
+volumes:
+  pi-config:

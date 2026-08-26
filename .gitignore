@@ -1,13 +1,6 @@
 # Secrets
 .env
 
-# Upstream source clone (fetched on demand — see README / `make doctor`)
-pi_agent_rust/
-
-# Agent workspace contents (keep the directory itself via placeholder)
-workspace/*
-!workspace/.gitkeep
-
 # Editor / OS noise
 .idea/
 .vscode/

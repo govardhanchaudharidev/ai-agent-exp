@@ -1,4 +1,4 @@
-.PHONY: build up down shell restart logs prune web
+.PHONY: build up down shell pi pi-models pi-version restart logs prune
 
 build:
 	docker compose build
@@ -12,11 +12,17 @@ down:
 shell:
 	docker compose exec node sh
 
-# Boot the DSH web GUI
-# Uses node --expose-internals because the HMR plugin requires it at the
-# Node.js runtime level (not a DSH CLI flag). DSH binary is globally installed.
-web:
-	docker compose exec -d node sh -c "node --expose-internals /usr/local/bin/dsh --profile web --no-open"
+# Launch the Pi interactive coding agent
+pi:
+	docker compose exec node pi
+
+# Refresh Pi's provider model catalog (fetches latest model lists from providers)
+pi-models:
+	docker compose exec node sh -c "pi --refresh-models"
+
+# Print the installed Pi version
+pi-version:
+	docker compose exec node sh -c "pi --version"
 
 restart: down up
 
