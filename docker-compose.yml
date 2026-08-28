@@ -3,11 +3,13 @@ services:
     build: .
     working_dir: /workspace
     env_file: .env
+    environment:
+      - OPENAI_BASE_URL=http://host.docker.internal:1234/v1
+      - OPENAI_API_KEY=lm-studio
     volumes:
       - .:/workspace
-      - pi-config:/root/.pi/agent
+      - ./.pi:/root/.pi/agent
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     stdin_open: true
     tty: true
-
-volumes:
-  pi-config:

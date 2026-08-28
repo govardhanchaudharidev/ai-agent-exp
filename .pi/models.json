@@ -1,0 +1,15 @@
+{
+  "providers": {
+    "lmstudio": {
+      "baseUrl": "http://host.docker.internal:1234/v1",
+      "api": "openai-completions",
+      "apiKey": "lm-studio",
+      "models": [
+        {
+          "id": "default-model",
+          "name": "LM Studio Model"
+        }
+      ]
+    }
+  }
+}
