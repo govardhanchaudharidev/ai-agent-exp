@@ -4,7 +4,7 @@ This project provides an isolated, Docker-based environment for running an AI co
 
 ## Overview
 
-- **Dockerfile**: Sets up a Node-based environment, installs necessary dependencies (Python, Git), clones the `prime-agent` repository, and builds it.
+- **Dockerfile**: Multi-stage build for the Rust-based `prime-agent`. Stage 1 installs the Rust toolchain, clones `prime-agent`, and runs `cargo build --release`. Stage 2 copies the built binary and runtime files into a lean runtime image. Use build args to pin the `prime-agent` version.
 - **docker-compose.yml**: Defines the `prime-agent` service. It mounts the current directory into `/workspace` so the agent can interact with your local files and uses a `.env` file for configuration.
 - **Makefile**: Provides convenient wrappers around `docker compose` for building, running, and managing the agent container.
 
@@ -17,6 +17,15 @@ cp sample.env .env
 ```
 
 Update `.env` with your API keys (e.g., `OPENROUTER_API_KEY`).
+
+To pin a specific version of `prime-agent`, set `PRIME_AGENT_REF` to a branch, tag, or commit SHA (defaults to `main`). You can also override `PRIME_AGENT_REPO` to use a fork:
+
+```bash
+PRIME_AGENT_REPO=https://github.com/your-org/prime-agent.git
+PRIME_AGENT_REF=v0.1.2
+```
+
+These are passed as Docker build args, so changing them triggers a rebuild of the affected stage.
 
 ## Usage
 

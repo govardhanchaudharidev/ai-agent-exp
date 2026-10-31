@@ -2,7 +2,11 @@
 
 services:
   prime-agent:
-    build: .
+    build:
+      context: .
+      args:
+        PRIME_AGENT_REPO: ${PRIME_AGENT_REPO:-https://github.com/PrimeIntellect-ai/prime-agent.git}
+        PRIME_AGENT_REF: ${PRIME_AGENT_REF:-main}
     container_name: prime-agent
     volumes:
       - prime-data:/app/data
