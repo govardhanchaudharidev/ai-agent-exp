@@ -1,0 +1,56 @@
+# SearXNG settings.yml
+# Minimal self-hosted configuration
+
+server:
+  bind_address: "0.0.0.0"
+  port: 8080
+  base_url: http://localhost:8080/
+  secret_key: "CHANGE_ME_TO_A_RANDOM_STRING"
+  rate_limit: false
+
+outgoing:
+  request_timeout: 5.0
+  # Example of forcing a user-agent (optional)
+  # request_headers:
+  #   User-Agent: "Mozilla/5.0 ..."
+
+# Default DOI resolver
+default_doi_resolver: ""
+
+search:
+  # Default safe search level: 0 = off, 1 = moderate, 2 = strict
+  safe_search: 0
+  # Default language (empty = auto/detect)
+  language: ""
+  # Format: html or json
+  format: html
+
+  # Engines enabled by default (feel free to add/remove)
+  engines:
+    - name: duckduckgo
+      engine: duckduckgo
+      disabled: false
+      timeout: 5.0
+
+    - name: bing
+      engine: bing
+      disabled: false
+      timeout: 5.0
+
+    - name: brave
+      engine: brave
+      disabled: false
+      timeout: 5.0
+
+    - name: wikipedia
+      engine: wikipedia
+      disabled: false
+      timeout: 5.0
+
+redis:
+  enabled: false
+
+rate_limit:
+  enabled: false
+
+
